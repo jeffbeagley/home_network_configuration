@@ -87,14 +87,11 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
-        zones:
-          frontporch_parked_cars:
-            coordinates: 647,151,966,93,1064,70,1155,54,1221,26,1233,213,958,380,405,222
-            filters:
-              vehicle:
-                min_area: 5000
-                max_area: 100000
-                threshold: 0.65
+        objects:
+          filters:
+            vehicle:
+              mask:
+                - 522,195,690,148,1238,0,1245,440,415,254
       frontyard:
         ffmpeg:
           inputs:
