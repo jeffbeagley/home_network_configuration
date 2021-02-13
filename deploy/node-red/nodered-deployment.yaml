@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-red
+  namespace: nvr
+spec:
+  ports:
+    - protocol: TCP
+      port: 1880
+      targetPort: 1880
+  type: LoadBalancer
+  selector:
+    app: node-red
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-red-svc
+  namespace: nvr
+  labels:
+    component: node-red
+spec:
+  ports:
+    - port: 1880
+      targetPort: 1880
+      protocol: TCP
+  type: NodePort
+  selector:
+    component: node-red
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: node-red-pv-volume
+  namespace: nvr
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/node-red
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node-red-pv-claim
+  namespace: nvr
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-red
+  namespace: nvr
+  labels:
+    app: node-red
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: node-red
+  template:
+    metadata:
+      labels:
+        app: node-red
+    spec:
+      securityContext:
+        fsGroup: 1000 
+      volumes:
+        - name: node-red-data-storage
+          persistentVolumeClaim:
+            claimName: node-red-pv-claim
+      containers:
+      - name: node-red
+        image: nodered/node-red
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 1
+            memory: 512Mi
+        volumeMounts:
+          - name: node-red-data-storage
+            mountPath: /data
+

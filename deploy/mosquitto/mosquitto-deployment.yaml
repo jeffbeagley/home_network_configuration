@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt
+  namespace: nvr
+spec:
+  ports:
+    - protocol: TCP
+      port: 1883
+      targetPort: 1883
+  type: LoadBalancer
+  selector:
+    app: mosquitto
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-svc
+  namespace: nvr
+  labels:
+    component: mosquitto
+spec:
+  ports:
+    - port: 8123
+      targetPort: 8123
+      protocol: TCP
+  type: NodePort
+  selector:
+    component: mosquitto
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mosquitto-pv-volume
+  namespace: nvr
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/mosquitto
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-pv-claim
+  namespace: nvr
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: nvr
+  labels:
+    app: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      volumes:
+        - name: mosquitto-data-storage
+          persistentVolumeClaim:
+            claimName: mosquitto-pv-claim
+        - name: mosquitto-config
+          configMap:
+            name: mosquitto-config
+      containers:
+      - name: home-assistant
+        image: eclipse-mosquitto:2.0.6
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 1
+            memory: 512Mi
+        volumeMounts:
+          - name: mosquitto-data-storage
+            mountPath: /mosquitto/data
+          - name: mosquitto-config 
+            mountPath: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf
+
