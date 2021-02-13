@@ -18,7 +18,7 @@ metadata:
   name: home-assistant-svc
   namespace: nvr
   labels:
-    component: home-assistant
+    app: home-assistant
 spec:
   ports:
     - port: 8123
@@ -26,7 +26,7 @@ spec:
       protocol: TCP
   type: NodePort
   selector:
-    component: home-assistant
+    app: home-assistant
 ---
 apiVersion: v1
 kind: PersistentVolume

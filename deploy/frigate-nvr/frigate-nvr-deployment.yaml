@@ -1,0 +1,149 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate
+  namespace: nvr
+spec:
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
+  selector:
+    app: frigate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-rtmp
+  namespace: nvr
+spec:
+  ports:
+    - protocol: TCP
+      port: 1935
+      targetPort: 1935
+  type: LoadBalancer
+  selector:
+    app: frigate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-svc
+  namespace: nvr
+  labels:
+    app: frigate
+spec:
+  ports:
+    - port: 1935
+      targetPort: 1935
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: frigate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-rtmp-svc
+  namespace: nvr
+  labels:
+    app: frigate
+spec:
+  ports:
+    - port: 1935
+      targetPort: 1935
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: frigate
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: frigate-pv-volume
+  namespace: nvr
+spec:
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/frigate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: frigate-pv-claim
+  namespace: nvr
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate
+  namespace: nvr
+  labels:
+    app: frigate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: frigate
+  template:
+    metadata:
+      labels:
+        app: frigate
+    spec:
+      volumes:
+        - name: frigate-media-storage
+          persistentVolumeClaim:
+            claimName: frigate-pv-claim
+        - name: frigate-config
+          configMap:
+            name: frigate-config
+        - name: tmp-cache
+          emptyDir: {}
+      containers:
+      - name: frigate
+        image: blakeblackshear/frigate:0.8.1-amd64
+        securityContext:
+          privileged: true
+        resources:
+          limits:
+            cpu: 4
+            memory: 6Gi
+            ephemeral-storage: "2Gi"
+          requests:
+            cpu: 1
+            memory: 3Gi
+            ephemeral-storage: "1Gi"
+        volumeMounts:
+          - name: frigate-media-storage
+            mountPath: /media
+          - name: frigate-config 
+            mountPath: /config/config.yml
+            subPath: config.yml
+          - name: frigate-config 
+            mountPath: /labelmap.txt
+            subPath: labelmap.txt
+          - name: tmp-cache
+            mountPath: /tmp/cache
+            
