@@ -86,6 +86,22 @@ spec:
         - name: home-assistant-config-storage
           persistentVolumeClaim:
             claimName: home-assistant-pv-claim
+      initContainers:
+      - name: install-custom-components
+        image: alpine:3.12.3
+        command:
+          - sh 
+          - -c
+          - |
+            #!/bin/sh
+            apk add git
+            #git frigate custom integration for HA
+            git clone https://github.com/blakeblackshear/frigate-hass-integration.git
+            mkdir -p /config/custom_components
+            cp -r frigate-hass-integration/custom_components/frigate /config/custom_components/frigate
+        volumeMounts:
+          - name: home-assistant-config-storage
+            mountPath: /config
       containers:
       - name: home-assistant
         image: homeassistant/home-assistant:stable
