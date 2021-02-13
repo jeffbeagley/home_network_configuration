@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  labels:
+    app: home-assistant
+data:
+  automations.yaml: |-
+    []
+  configuration.yaml: |-
+    # Configure a default setup of Home Assistant (frontend, api, etc)
+    default_config:
+
+    # Text to speech
+    tts:
+      - platform: google_translate
+
+    group: !include groups.yaml
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml

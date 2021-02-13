@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-assistant
+  namespace: nvr
+spec:
+  selector:
+    app: home-assistant
+  ports:
+    - protocol: TCP
+      port: 8123
+      targetPort: 8123
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-assistant-svc
+  namespace: nvr
+  labels:
+    component: home-assistant
+spec:
+  ports:
+    - port: 8123
+      targetPort: 8123
+      protocol: TCP
+  type: NodePort
+  selector:
+    component: home-assistant
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: home-assistant-pv-volume
+  namespace: nvr
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/home-assistant-pv
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: home-assistant-pv-claim
+  namespace: nvr
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  namespace: nvr
+  labels:
+    app: home-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      volumes:
+        - name: home-assistant-config-storage
+          persistentVolumeClaim:
+            claimName: home-assistant-pv-claim
+      containers:
+      - name: home-assistant
+        image: homeassistant/home-assistant:stable
+        resources:
+          limits:
+            cpu: 2
+            memory: 2Gi
+          requests:
+            cpu: 1
+            memory: 512Mi
+        volumeMounts:
+          - name: home-assistant-config-storage
+            mountPath: /config
+
+
