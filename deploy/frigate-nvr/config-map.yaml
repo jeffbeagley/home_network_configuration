@@ -60,6 +60,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 1280
         height: 720
         fps: 5
@@ -70,6 +72,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 640
         height: 360
         fps: 5
@@ -80,6 +84,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 640
         height: 360
         fps: 5
@@ -90,6 +96,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 640
         height: 360
         fps: 5
@@ -100,6 +108,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 640
         height: 360
         fps: 5
@@ -110,6 +120,8 @@ data:
               roles:
                 - detect
                 - rtmp
+                - clips
+                - record
         width: 640
         height: 360
         fps: 5
