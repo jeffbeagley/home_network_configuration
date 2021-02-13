@@ -59,17 +59,17 @@ data:
         - /dev/dri/renderD128
         - -hwaccel_output_format
         - yuv420p
-    input_args: >-
-      -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport
-      tcp -stimeout 5000000 -use_wallclock_as_timestamps 1
-    output_args:
-      detect: '-f rawvideo -pix_fmt yuv420p'
-      record: >-
-        -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1
-        -strftime 1 -c copy -an
-      clips: >-
-        -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1
-        -strftime 1 -c copy -an
+      input_args: >-
+        -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport
+        tcp -stimeout 5000000 -use_wallclock_as_timestamps 1
+      output_args:
+        detect: '-f rawvideo -pix_fmt yuv420p'
+        record: >-
+          -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1
+          -strftime 1 -c copy -an
+        clips: >-
+          -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1
+          -strftime 1 -c copy -an
     cameras:
       frontporch:
         ffmpeg:
@@ -83,6 +83,18 @@ data:
         width: 1280
         height: 720
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
+        zones:
+          frontporch_parked_cars:
+            coordinates: 647,151,966,93,1064,70,1155,54,1221,26,1233,213,958,380,405,222
+            filters:
+              vehicle:
+                min_area: 5000
+                max_area: 100000
+                threshold: 0.65
       frontyard:
         ffmpeg:
           inputs:
@@ -95,6 +107,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
       alley:
         ffmpeg:
           inputs:
@@ -107,6 +123,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
       backyard:
         ffmpeg:
           inputs:
@@ -119,6 +139,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
       puppydeck:
         ffmpeg:
           inputs:
@@ -131,6 +155,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
       garage:
         ffmpeg:
           inputs:
@@ -143,6 +171,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
       kitchen:
         ffmpeg:
           inputs:
@@ -155,6 +187,10 @@ data:
         width: 640
         height: 360
         fps: 5
+        clips:
+          enabled: true
+          pre_capture: 10
+          post_capture: 15
   labelmap.txt: |
     0  person
     1  bicycle
