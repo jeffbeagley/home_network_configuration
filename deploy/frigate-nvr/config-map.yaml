@@ -102,7 +102,6 @@ data:
               person:
                 min_area: 500
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
           Driveway:
             coordinates: 1246,197,650,164,415,257,1238,413
@@ -112,7 +111,6 @@ data:
               person:
                 min_area: 1000
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
           Street:
             coordinates: 156,286,694,106,1080,21,1132,37,162,343
@@ -120,12 +118,10 @@ data:
               vehicle:
                 min_area: 1000
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.5
               person:
                 min_area: 500
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
           "Front Yard":
             coordinates: 162,340,419,256,669,333,244,540
@@ -133,7 +129,6 @@ data:
               person:
                 min_area: 500
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
       frontyard:
         ffmpeg:
@@ -162,7 +157,6 @@ data:
               person:
                 min_area: 500
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
           "Kelly and Chris Yard":
             coordinates: 53,438,0,465,0,1080,884,303
@@ -172,12 +166,10 @@ data:
               vehicle:
                 min_area: 1000
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.5
               person:
                 min_area: 500
                 max_area: 100000
-                min_score: 0.2
                 threshold: 0.7
         motion:
           mask:
