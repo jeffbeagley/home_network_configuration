@@ -38,6 +38,11 @@ spec:
     - port: 1935
       targetPort: 1935
       protocol: TCP
+      name: rtmp
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+      name: web
   type: NodePort
   selector:
     app: frigate
@@ -129,7 +134,7 @@ spec:
         resources:
           limits:
             cpu: 4
-            memory: 6Gi
+            memory: 8Gi
             ephemeral-storage: "2Gi"
           requests:
             cpu: 1
