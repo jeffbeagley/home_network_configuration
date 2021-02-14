@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole
+  namespace: networking-tools
+spec:
+  ports:
+    - protocol: TCP
+      port: 53
+      targetPort: 53
+      name: dns
+    - port: 9000
+      targetPort: 80
+      name: pihole-admin
+  type: LoadBalancer
+  selector:
+    app: pihole
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-dns-lb
+  namespace: networking-tools
+  annotations:
+spec:
+  ports:
+    - protocol: UDP
+      port: 53
+      targetPort: 53
+      name: dns
+  type: LoadBalancer
+  selector:
+    app: pihole
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pihole-local-etc-volume
+  namespace: networking-tools
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/pihole/etc/pihole
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pihole-local-dnsmasq-volume
+  namespace: networking-tools
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/pihole/etc/dnsmasq.d
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pihole-local-etc-claim
+  namespace: networking-tools
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pihole-local-dnsmasq-claim
+  namespace: networking-tools
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+  namespace: networking-tools
+  labels:
+    app: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      volumes:
+      - name: pihole-local-etc-volume
+        persistentVolumeClaim:
+          claimName: pihole-local-etc-claim
+      - name: pihole-local-dnsmasq-volume
+        persistentVolumeClaim:
+          claimName: pihole-local-dnsmasq-claim
+      containers:
+      - name: pihole
+        image: pihole/pihole:latest
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: pihole-local-etc-volume
+          mountPath: "/etc/pihole"
+        - name: pihole-local-dnsmasq-volume
+          mountPath: "/etc/dnsmasq.d"
