@@ -98,14 +98,43 @@ data:
         zones:
           "Front Patio":
             coordinates: 0,720,1280,720,1280,440,785,353,248,602
+            filters:
+              person:
+                min_area: 500
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
           Driveway:
             coordinates: 1246,197,650,164,415,257,1238,413
           "Eds Yard":
             coordinates: 1240,169,1223,32,1023,67,776,143
+            filters:
+              person:
+                min_area: 1000
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
           Street:
             coordinates: 156,286,694,106,1080,21,1132,37,162,343
+            filters:
+              vehicle:
+                min_area: 1000
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.5
+              person:
+                min_area: 500
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
           "Front Yard":
             coordinates: 162,340,419,256,669,333,244,540
+            filters:
+              person:
+                min_area: 500
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
       frontyard:
         ffmpeg:
           inputs:
@@ -129,10 +158,27 @@ data:
         zones:
           "Front Yard":
             coordinates: 0,1080,892,300,1920,257,1920,1080
+            filters:
+              person:
+                min_area: 500
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
           "Kelly and Chris Yard":
             coordinates: 53,438,0,465,0,1080,884,303
           Street:
             coordinates: 1920,133,1205,146,365,300,0,431,582,355,1243,281,1920,241
+            filters:
+              vehicle:
+                min_area: 1000
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.5
+              person:
+                min_area: 500
+                max_area: 100000
+                min_score: 0.2
+                threshold: 0.7
         motion:
           mask:
             - 0,0,721,0,555,234,0,363 ## tree line
