@@ -151,4 +151,23 @@ spec:
             subPath: labelmap.txt
           - name: tmp-cache
             mountPath: /tmp/cache
-            
+        # Many applications running for long periods of time eventually transition to broken states, 
+        # and cannot recover except by being restarted. Kubernetes provides liveness probes to detect 
+        # and remedy such situations.
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 10
+          # how often to perform this check
+          periodSeconds: 10
+        # Sometimes, applications are temporarily unable to serve traffic. For example, an application might 
+        # need to load large data or configuration files during startup, or depend on external services after 
+        # startup. In such cases, you don't want to kill the application, but you don't want to send it requests either
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 0
+          # how often to perform this check
+          periodSeconds: 5
