@@ -74,7 +74,7 @@ data:
       frontporch:
         ffmpeg:
           inputs:
-            - path: rtsp://172.16.7.9:7447/gO7py15gxetAuE1n
+            - path: rtsp://172.16.7.9:7447/wkBxF2rsJSeUd0F8
               roles:
                 - detect
                 - rtmp
@@ -82,7 +82,7 @@ data:
                 - record
         width: 1280
         height: 720
-        fps: 5
+        fps: 15
         clips:
           enabled: true
           pre_capture: 10
@@ -95,15 +95,15 @@ data:
       frontyard:
         ffmpeg:
           inputs:
-            - path: rtsp://172.16.7.9:7447/HqkPMmhXcGoMxn5i
+            - path: rtsp://172.16.7.9:7447/QJknjUjZxlnVgr9q
               roles:
                 - detect
                 - rtmp
                 - clips
                 - record
-        width: 640
-        height: 360
-        fps: 5
+        width: 1920
+        height: 1080
+        fps: 15
         clips:
           enabled: true
           pre_capture: 10
