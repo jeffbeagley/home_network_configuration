@@ -86,11 +86,28 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
         objects:
           filters:
             vehicle:
               mask:
                 - 522,195,690,148,1238,0,1245,440,415,254
+        zones:
+          "Front Patio":
+            coordinates: 0,720,1280,720,1280,440,785,353,248,602
+          Driveway:
+            coordinates: 1246,197,650,164,415,257,1238,413
+          "Eds Yard":
+            coordinates: 1240,169,1223,32,1023,67,776,143
+          Street:
+            coordinates: 156,286,694,106,1080,21,1132,37,162,343
+          "Front Yard":
+            coordinates: 162,340,419,256,669,333,244,540
       frontyard:
         ffmpeg:
           inputs:
@@ -107,6 +124,22 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
+        zones:
+          "Front Yard":
+            coordinates: 0,1080,892,300,1920,257,1920,1080
+          "Kelly and Chris Yard":
+            coordinates: 53,438,0,465,0,1080,884,303
+          Street:
+            coordinates: 1920,133,1205,146,365,300,0,431,582,355,1243,281,1920,241
+        motion:
+          mask:
+            - 0,0,721,0,555,234,0,363 ## tree line
       alley:
         ffmpeg:
           inputs:
@@ -123,6 +156,15 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
+        zones:
+          Alley:
+            coordinates: 640,360,0,360,0,163,0,0,640,0
       backyard:
         ffmpeg:
           inputs:
@@ -139,6 +181,15 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
+        zones:
+          Backyard:
+            coordinates: 640,0,640,360,0,360,0,0
       puppydeck:
         ffmpeg:
           inputs:
@@ -155,6 +206,19 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
+        zones:
+          "Puppy Deck":
+            coordinates: 0,291,93,360,375,360,328,307,396,196,199,147
+          "Puppy Area":
+            coordinates: 527,74,356,40,204,144,416,195,397,278,482,291
+          "Eds Backyard":
+            coordinates: 366,0,0,0,0,244
       garage:
         ffmpeg:
           inputs:
@@ -171,6 +235,15 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
+        zones:
+          Garage:
+            coordinates: 0,360,0,0,640,0,640,360
       kitchen:
         ffmpeg:
           inputs:
@@ -187,6 +260,12 @@ data:
           enabled: true
           pre_capture: 10
           post_capture: 15
+        snapshots:
+          enabled: true
+          timestamp: false
+          bounding_box: true
+          retain:
+            default: 30
   labelmap.txt: |
     0  person
     1  bicycle
