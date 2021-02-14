@@ -28,3 +28,13 @@ spec:
             name: home-assistant
             port: 
               number: 8123
+  - host: node-red.jeffbeagley.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: node-red
+            port: 
+              number: 1880
