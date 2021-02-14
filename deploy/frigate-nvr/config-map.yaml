@@ -40,11 +40,10 @@ data:
       track:
         - person
         - vehicle
-        - cat
-        - dog
+        - animal
       filters:
         person:
-          min_area: 5000
+          min_area: 2000
           max_area: 100000
           threshold: 0.5
     clips:
@@ -204,8 +203,8 @@ data:
     13  parking meter
     14  bench
     15  bird
-    16  cat
-    17  dog
+    16  animal
+    17  animal
     18  horse
     19  sheep
     20  cow
