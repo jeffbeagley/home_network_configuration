@@ -173,7 +173,7 @@ data:
                 threshold: 0.7
         motion:
           mask:
-            - 0,0,721,0,555,234,0,363 ## tree line
+            - 0,0,1920,0,1920,93,670,187,0,363 ## tree line
       alley:
         ffmpeg:
           inputs:
