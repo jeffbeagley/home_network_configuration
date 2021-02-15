@@ -8,7 +8,102 @@ metadata:
     app: home-assistant
 data:
   automations.yaml: |-
-    []
+    - id: '1613353187546'
+      alias: Puppy Deck Motion Light On
+      description: ''
+      trigger:
+      - platform: state
+        to: 'on'
+        entity_id: sensor.puppy_deck_person
+      - platform: state
+        entity_id: sensor.puppy_deck_animal
+        to: 'on'
+      condition:
+      - condition: sun
+        before: sunset
+        after: sunrise
+        before_offset: -01:00:00
+        after_offset: +01:00:00
+      action:
+      - type: turn_on
+        device_id: 74f02a570b63a2474ab8184c74cffa00
+        entity_id: light.puppy_deck_light
+        domain: light
+      mode: single
+    - id: '1613353294593'
+      alias: Puppy Deck Motion Light Off
+      description: Turn off lights on Puppy Deck if no motion for 5 minutes
+      trigger:
+      - platform: state
+        entity_id: sensor.puppy_deck_person
+        to: 'off'
+        for: 5 Minutes
+      - platform: state
+        entity_id: sensor.puppy_deck_animal
+        to: 'off'
+        for: 5 Minutes
+      condition: []
+      action:
+      - type: turn_off
+        device_id: 74f02a570b63a2474ab8184c74cffa00
+        entity_id: light.puppy_deck_light
+        domain: light
+      mode: single
+    - id: '1613381117021'
+      alias: Driveway Motion Light on
+      description: ''
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.frontporch_person_motion
+        to: 'on'
+      - platform: state
+        to: 'on'
+        entity_id: binary_sensor.front_yard_person_motion
+      - platform: state
+        entity_id: binary_sensor.front_yard_animal_motion
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.frontporch_animal_motion
+        to: 'on'
+      condition:
+      - condition: sun
+        before: sunset
+        after: sunrise
+        before_offset: -01:00:00
+        after_offset: +01:00:00
+      action:
+      - type: turn_on
+        device_id: 5d72ecc73b5e0be9c42de10be43be0fa
+        entity_id: light.driveway_light
+        domain: light
+      mode: single
+    - id: '1613381307752'
+      alias: Driveway Motion Light Off
+      description: ''
+      trigger:
+      - platform: state
+        entity_id: binary_sensor.frontporch_person_motion
+        to: 'off'
+        for: 5 Minutes
+      - platform: state
+        entity_id: binary_sensor.front_yard_person_motion
+        to: 'off'
+        for: 5 Minutes
+      - platform: state
+        entity_id: binary_sensor.front_yard_animal_motion
+        to: 'off'
+        for: 5 Minutes
+      - platform: state
+        entity_id: binary_sensor.frontporch_animal_motion
+        to: 'off'
+        for: 5 Minutes
+      condition: []
+      action:
+      - type: turn_off
+        device_id: 5d72ecc73b5e0be9c42de10be43be0fa
+        entity_id: light.driveway_light
+        domain: light
+      mode: single
   configuration.yaml: |-
     # Configure a default setup of Home Assistant (frontend, api, etc)
     default_config:
@@ -21,3 +116,4 @@ data:
     automation: !include automations.yaml
     script: !include scripts.yaml
     scene: !include scenes.yaml
+  
