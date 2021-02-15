@@ -6,9 +6,11 @@ metadata:
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: "le-clusterissuer"
 spec:
   rules:
-  - host: pihole.jeffbeagley.com
+  - host: pihole.home.jeffbeagley.com
     http:
       paths:
       - path: /
@@ -18,3 +20,8 @@ spec:
             name: pihole
             port: 
               number: 9000
+  tls:
+  - hosts:
+    - "home.jeffbeagley.com"
+    - "*.home.jeffbeagley.com"
+    secretName: cert-wildcard-home-jeffbeagley-com

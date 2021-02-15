@@ -1,0 +1,35 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: le-clusterissuer
+  namespace: networking-tools
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: jeffbeagley@gmail.com
+    privateKeySecretRef:
+      name: le-clusterissuer
+    solvers:
+      - dns01:
+          route53:
+            region: eu-east-2
+            accessKeyID: NOPE
+            secretAccessKeySecretRef:
+              name: aws-route53-creds
+              key: password.txt
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard.home.jeffbeagley.com
+  namespace: networking-tools
+spec:
+  secretName: cert-wildcard-home-jeffbeagley-com
+  commonName: '*.home.jeffbeagley.com'
+  dnsNames:
+  - "home.jeffbeagley.com"
+  - "*.home.jeffbeagley.com"
+  issuerRef:
+    name: le-clusterissuer
+    kind: ClusterIssuer
+    group: cert-manager.io

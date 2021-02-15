@@ -1,14 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-protect-svc
+  namespace: nvr
+spec:
+  ports:
+  - name: app
+    port: 443
+    protocol: TCP
+    targetPort: 443
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: unifi-protect-svc
+  namespace: nvr
+subsets:
+- addresses:
+  - ip: 172.16.7.9
+  ports:
+  - name: app
+    port: 443
+    protocol: TCP
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-loadbalancer
+  name: nginx-loadbalancer-http
   namespace: nvr
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: "le-clusterissuer"
 spec:
   rules:
-  - host: frigate.jeffbeagley.com
+  - host: frigate.home.jeffbeagley.com
     http:
       paths:
       - path: /
@@ -18,7 +45,7 @@ spec:
             name: frigate
             port: 
               number: 5000
-  - host: ha.jeffbeagley.com
+  - host: home.jeffbeagley.com
     http:
       paths:
       - path: /
@@ -28,7 +55,7 @@ spec:
             name: home-assistant
             port: 
               number: 8123
-  - host: node-red.jeffbeagley.com
+  - host: node-red.home.jeffbeagley.com
     http:
       paths:
       - path: /
@@ -38,3 +65,37 @@ spec:
             name: node-red
             port: 
               number: 1880
+  tls:
+  - hosts:
+    - "home.jeffbeagley.com"
+    - "*.home.jeffbeagley.com"
+    secretName: cert-wildcard-home-jeffbeagley-com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-loadbalancer-https
+  namespace: nvr
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: "le-clusterissuer"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  rules:
+  - host: unifi-protect.home.jeffbeagley.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: unifi-protect-svc
+            port: 
+              number: 443
+  tls:
+  - hosts:
+    - "home.jeffbeagley.com"
+    - "*.home.jeffbeagley.com"
+    secretName: cert-wildcard-home-jeffbeagley-com
