@@ -29,7 +29,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frigate-svc
+  name: frigate
   namespace: nvr
   labels:
     app: frigate
@@ -128,7 +128,7 @@ spec:
           emptyDir: {}
       containers:
       - name: frigate
-        image: blakeblackshear/frigate:0.8.1-amd64
+        image: blakeblackshear/frigate:0.8.2-amd64
         securityContext:
           privileged: true
         resources:
@@ -137,7 +137,7 @@ spec:
             memory: 8Gi
             ephemeral-storage: "2Gi"
           requests:
-            cpu: 1
+            cpu: 500m
             memory: 3Gi
             ephemeral-storage: "1Gi"
         volumeMounts:
