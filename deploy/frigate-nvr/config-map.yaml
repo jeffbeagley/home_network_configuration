@@ -45,7 +45,7 @@ data:
         person:
           min_area: 2000
           max_area: 100000
-          threshold: 0.5
+          threshold: 0.75
     clips:
       max_seconds: 600
       retain:
@@ -90,46 +90,44 @@ data:
           bounding_box: true
           retain:
             default: 30
-        objects:
-          filters:
-            vehicle:
-              mask:
-                - 522,195,690,148,1238,0,1245,440,415,254
         zones:
           "Front Patio":
-            coordinates: 0,720,1280,720,1280,440,785,353,248,602
+            coordinates: 0,720,1280,720,1280,440,814,331,248,602
             filters:
               person:
                 min_area: 500
                 max_area: 100000
                 threshold: 0.7
           Driveway:
-            coordinates: 1246,197,650,164,415,257,1238,413
+            coordinates: 1280,175,694,149,415,257,1280,425
           "Eds Yard":
             coordinates: 1240,169,1223,32,1023,67,776,143
             filters:
               person:
-                min_area: 1000
+                min_area: 5000
                 max_area: 100000
                 threshold: 0.7
           Street:
-            coordinates: 156,286,694,106,1080,21,1132,37,162,343
+            coordinates: 0,270,680,75,1017,0,1245,0,0,374
             filters:
               vehicle:
                 min_area: 1000
                 max_area: 100000
-                threshold: 0.5
+                threshold: 0.7
               person:
                 min_area: 500
                 max_area: 100000
-                threshold: 0.7
+                threshold: 0.3
           "Front Yard":
-            coordinates: 162,340,419,256,669,333,244,540
+            coordinates: 162,340,419,256,838,335,279,604
             filters:
               person:
                 min_area: 500
                 max_area: 100000
-                threshold: 0.7
+                threshold: 0.6
+        motion:
+          mask:
+            - 367,29,373,120,210,141,211,208,184,200,88,104
       frontyard:
         ffmpeg:
           inputs:
@@ -158,7 +156,7 @@ data:
                 min_area: 500
                 max_area: 100000
                 threshold: 0.7
-          "Kelly and Chris Yard":
+          "Kellie and Chris's Yard":
             coordinates: 53,438,0,465,0,1080,884,303
           Street:
             coordinates: 1920,133,1205,146,365,300,0,431,582,355,1243,281,1920,241
@@ -170,10 +168,17 @@ data:
               person:
                 min_area: 500
                 max_area: 100000
-                threshold: 0.7
+                threshold: 0.3
         motion:
           mask:
-            - 0,0,1920,0,1920,93,670,187,0,363 ## tree line
+            - 0,0,1323,0,1920,0,1920,57,1138,94,502,198,0,363 ## tree line
+        objects:
+          filters:
+            person:
+              mask: 
+                - 427,518,288,540,124,94,580,0,635,91,544,187,328,178
+                - 855,166,841,70,798,81,815,160
+                - 1289,0,1299,77,1266,84,1245,0
       alley:
         ffmpeg:
           inputs:
@@ -220,6 +225,15 @@ data:
         zones:
           Backyard:
             coordinates: 640,0,640,360,0,360,0,0
+            filters:
+              animal:
+                min_area: 500
+                max_area: 100000
+                threshold: 0.5
+              person:
+                min_area: 500
+                max_area: 100000
+                threshold: 0.7
       puppydeck:
         ffmpeg:
           inputs:
@@ -241,12 +255,21 @@ data:
           retain:
             default: 30
         zones:
-          "Puppy Deck":
-            coordinates: 0,291,93,360,375,360,328,307,396,196,199,147
-          "Puppy Area":
-            coordinates: 527,74,356,40,204,144,416,195,397,278,482,291
           "Eds Backyard":
-            coordinates: 366,0,0,0,0,244
+            coordinates: 169,110,370,0,0,0,0,223
+          "Puppy Area":
+            coordinates: 573,0,380,0,186,140,372,177,364,255,534,285
+            filters:
+              animal:
+                min_area: 300
+                max_area: 100000
+                threshold: 0.5
+              person:
+                min_area: 300
+                max_area: 100000
+                threshold: 0.7
+          "Puppy Deck":
+            coordinates: 0,236,0,360,375,360,328,307,396,196,158,123
       garage:
         ffmpeg:
           inputs:
@@ -290,6 +313,9 @@ data:
           bounding_box: true
           retain:
             default: 30
+        zones:
+          "Puppy Chair":
+            coordinates: 304,42,332,72,310,360,46,314,34,312,24,52
   labelmap.txt: |
     0  person
     1  bicycle
