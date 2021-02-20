@@ -4,6 +4,7 @@ metadata:
   name: pihole
   namespace: networking-tools
 spec:
+  externalTrafficPolicy: Local
   ports:
     - protocol: TCP
       port: 53
@@ -23,6 +24,7 @@ metadata:
   namespace: networking-tools
   annotations:
 spec:
+  externalTrafficPolicy: Local
   ports:
     - protocol: UDP
       port: 53
@@ -132,7 +134,7 @@ spec:
           claimName: pihole-local-dnsmasq-claim
       containers:
       - name: pihole
-        image: pihole/pihole:latest
+        image: pihole/pihole:v5.7
         resources:
           limits:
             cpu: 1
