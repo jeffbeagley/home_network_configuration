@@ -97,8 +97,10 @@ spec:
             apk add git
             #git frigate custom integration for HA
             git clone https://github.com/blakeblackshear/frigate-hass-integration.git
+            git clone https://github.com/custom-components/alexa_media_player.git
             mkdir -p /config/custom_components
             cp -r frigate-hass-integration/custom_components/frigate /config/custom_components/frigate
+            cp -r alexa_media_player/custom_components/alexa_media /config/custom_components/alexa_media
         volumeMounts:
           - name: home-assistant-config-storage
             mountPath: /config
@@ -110,7 +112,7 @@ spec:
             cpu: 2
             memory: 2Gi
           requests:
-            cpu: 1
+            cpu: 200m
             memory: 512Mi
         volumeMounts:
           - name: home-assistant-config-storage
