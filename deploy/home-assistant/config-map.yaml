@@ -60,31 +60,31 @@ data:
         - condition: or
           conditions:
           - condition: template
-            value_template: '{{ "Puppy Chair" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Puppy Chair" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Front Patio" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Front Patio" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Driveway" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Driveway" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Front Yard" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Front Yard" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Alley" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Alley" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Backyard" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Backyard" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Puppy Deck" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Puppy Deck" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Puppy Area" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Puppy Area" in trigger.payload_json["after"]["current_zones"]
               }}'
           - condition: template
-            value_template: '{{ "Garage" in trigger.payload_json["after"]["entered_zones"]
+            value_template: '{{ "Garage" in trigger.payload_json["after"]["current_zones"]
               }}'
       action:
       - service: timer.start
@@ -93,7 +93,7 @@ data:
       - service: notify.mobile_app_pixel_4_xl
         data_template:
           message: "A {{trigger.payload_json[\"after\"][\"label\"]}} was detected by {{\n\
-            \        trigger.payload_json[\"after\"][\"entered_zones\"]|last }}.\n"
+            \        trigger.payload_json[\"after\"][\"current_zones\"]|last }}.\n"
           data:
             ttl: 0
             priority: high
@@ -106,7 +106,7 @@ data:
       - service: notify.alexa_media
         data:
           message: "A {{trigger.payload_json[\"after\"][\"label\"]}} was detected by {{\n\
-            \        trigger.payload_json[\"after\"][\"entered_zones\"]|last }}."
+            \        trigger.payload_json[\"after\"][\"current_zones\"]|last }}."
           data:
             type: announce
             method: speak
@@ -205,7 +205,7 @@ data:
       - service: notify.mobile_app_pixel_4_xl
         data_template:
           message: "A {{trigger.payload_json[\"after\"][\"label\"]}} was detected in {{\n\
-            \        trigger.payload_json[\"after\"][\"entered_zones\"][0] }} on {{\n\
+            \        trigger.payload_json[\"after\"][\"current_zones\"]|last }} on {{\n\
             \        trigger.payload_json[\"after\"][\"camera\"] }}.\n"
           data:
             ttl: 0
@@ -218,7 +218,7 @@ data:
               uri: https://frigate.home.jeffbeagley.com/cameras/{{trigger.payload_json["after"]["camera"]}}?bbox=1&motion=1
       - service: notify.alexa_media
         data:
-          message: A {{trigger.payload_json["after"]["label"]}} was detected in {{ trigger.payload_json["after"]["entered_zones"][0]
+          message: A {{trigger.payload_json["after"]["label"]}} was detected in {{ trigger.payload_json["after"]["current_zones"]|last
             }} on {{ trigger.payload_json["after"]["camera"] }}.,
           data:
             type: announce
