@@ -113,7 +113,7 @@ data:
               vehicle:
                 min_area: 1000
                 max_area: 100000
-                threshold: 0.7
+                threshold: 0.6
               person:
                 min_area: 500
                 max_area: 100000
@@ -243,7 +243,7 @@ data:
                 - clips
         width: 640
         height: 360
-        fps: 5
+        fps: 15
         clips:
           enabled: true
           pre_capture: 2
