@@ -119,7 +119,7 @@ data:
                 max_area: 100000
                 threshold: 0.3
           "Front Yard":
-            coordinates: 162,340,419,256,838,335,279,604
+            coordinates: 176,351,406,270,838,335,279,604
             filters:
               person:
                 min_area: 500
