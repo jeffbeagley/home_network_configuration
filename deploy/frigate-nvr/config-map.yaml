@@ -108,7 +108,7 @@ data:
                 max_area: 100000
                 threshold: 0.7
           Street:
-            coordinates: 0,270,680,75,1017,0,1245,0,0,374
+            coordinates: 0,236,665,54,941,0,1245,0,0,374
             filters:
               vehicle:
                 min_area: 1000
