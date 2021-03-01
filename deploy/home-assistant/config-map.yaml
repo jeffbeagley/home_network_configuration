@@ -259,6 +259,82 @@ data:
         data:
           entity_id: timer.timer_puppydeck_floodlight
       mode: single
+    - id: '1614563694013'
+      alias: Night Time Lighting On
+      description: Turn on and configure any exterior light when the sun sets
+      trigger:
+      - platform: state
+        entity_id: sun.sun
+        to: below_horizon
+      condition: []
+      action:
+      - type: turn_on
+        device_id: 002439fad9ac4db3d16c3f122b370367
+        entity_id: light.front_patio
+        domain: light
+        brightness_pct: 10
+      mode: single
+    - id: '1614563768337'
+      alias: Night Time Lighting Off
+      description: Turn off lights when the sun rises
+      trigger:
+      - platform: state
+        entity_id: sun.sun
+        to: above_horizon
+      condition: []
+      action:
+      - type: turn_off
+        device_id: 002439fad9ac4db3d16c3f122b370367
+        entity_id: light.front_patio
+        domain: light
+      mode: single
+    - id: '1614564585758'
+      alias: Person Detection at Night Front Patio Lights
+      description: Turn front Patio Lights to 100% when detected motion in front yard
+        at night
+      trigger:
+      - platform: mqtt
+        topic: frigate/events
+      condition:
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: sun.sun
+          state: below_horizon
+        - condition: or
+          conditions:
+          - condition: template
+            value_template: '{{ "Front Yard" in trigger.payload_json["after"]["current_zones"]
+              }}'
+          - condition: template
+            value_template: '{{ "Driveway" in trigger.payload_json["after"]["current_zones"]
+              }}'
+      action:
+      - service: timer.start
+        data: {}
+        entity_id: timer.timer_nighttime_person_frontpatio_cooldown
+      - type: turn_on
+        device_id: 002439fad9ac4db3d16c3f122b370367
+        entity_id: light.front_patio
+        domain: light
+        brightness_pct: 100
+      mode: single
+    - id: '1614565112086'
+      alias: Front Patio Motion Lights off
+      description: Turn down front patio lights to normal 10% when no more motion is detected
+      trigger:
+      - platform: state
+        entity_id: timer.timer_nighttime_person_frontpatio_cooldown
+        from: active
+        to: idle
+      condition: []
+      action:
+      - type: turn_on
+        device_id: 002439fad9ac4db3d16c3f122b370367
+        entity_id: light.front_patio
+        domain: light
+        brightness_pct: 10
+      mode: single
 
   configuration.yaml: |-
     # Configure a default setup of Home Assistant (frontend, api, etc)
