@@ -204,9 +204,11 @@ data:
           entity_id: timer.timer_nighttime_person_cooldown
       - service: notify.mobile_app_pixel_4_xl
         data_template:
-          message: "A {{trigger.payload_json[\"after\"][\"label\"]}} was detected in {{\n\
-            \        trigger.payload_json[\"after\"][\"current_zones\"]|last }} on {{\n\
-            \        trigger.payload_json[\"after\"][\"camera\"] }}.\n"
+          message: 'A {{trigger.payload_json["after"]["label"]}} was detected by {{
+
+            trigger.payload_json["after"]["current_zones"]|last }}.,
+
+            '
           data:
             ttl: 0
             priority: high
@@ -218,8 +220,8 @@ data:
               uri: https://frigate.home.jeffbeagley.com/cameras/{{trigger.payload_json["after"]["camera"]}}?bbox=1&motion=1
       - service: notify.alexa_media
         data:
-          message: A {{trigger.payload_json["after"]["label"]}} was detected in {{ trigger.payload_json["after"]["current_zones"]|last
-            }} on {{ trigger.payload_json["after"]["camera"] }}.,
+          message: A {{trigger.payload_json["after"]["label"]}} was detected by {{ trigger.payload_json["after"]["current_zones"]|last
+            }}.,
           data:
             type: announce
             method: speak
@@ -257,6 +259,7 @@ data:
         data:
           entity_id: timer.timer_puppydeck_floodlight
       mode: single
+
   configuration.yaml: |-
     # Configure a default setup of Home Assistant (frontend, api, etc)
     default_config:
@@ -269,4 +272,5 @@ data:
     automation: !include automations.yaml
     script: !include scripts.yaml
     scene: !include scenes.yaml
+
   
