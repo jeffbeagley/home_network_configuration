@@ -159,7 +159,7 @@ data:
           "Kellie and Chris's Yard":
             coordinates: 53,438,0,465,0,1080,884,303
           Street:
-            coordinates: 1920,133,1205,146,365,300,0,431,582,355,1243,281,1920,241
+            coordinates: 1199,55,560,183,87,313,0,452,582,355,1251,266,1920,255,1920,41
             filters:
               vehicle:
                 min_area: 1000
