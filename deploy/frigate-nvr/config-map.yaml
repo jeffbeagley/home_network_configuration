@@ -150,7 +150,7 @@ data:
             default: 30
         zones:
           "Front Yard":
-            coordinates: 0,1080,892,300,1920,257,1920,1080
+            coordinates: 0,1080,834,311,1357,267,1920,257,1920,1080
             filters:
               person:
                 min_area: 500
