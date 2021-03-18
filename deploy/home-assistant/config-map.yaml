@@ -54,6 +54,8 @@ data:
         - condition: template
           value_template: '{{ is_state("timer.timer_daytime_person_cooldown", "idle")
             }}'
+        - condition: template
+          value_template: '{{ is_state("timer.timer_snooze_automations", "idle") }}'
         - condition: state
           entity_id: sun.sun
           state: above_horizon
@@ -301,6 +303,8 @@ data:
         - condition: state
           entity_id: sun.sun
           state: below_horizon
+        - condition: template
+          value_template: '{{ trigger.payload_json["after"]["label"] == "person" }}'
         - condition: or
           conditions:
           - condition: template
@@ -334,6 +338,64 @@ data:
         entity_id: light.front_patio
         domain: light
         brightness_pct: 10
+      mode: single
+    - id: '1616041218254'
+      alias: test_phone_notification
+      description: ''
+      trigger:
+      - platform: mqtt
+        topic: frigate/events
+      condition:
+      - condition: and
+        conditions:
+        - condition: template
+          value_template: '{{ is_state("timer.timer_nighttime_person_cooldown", "idle")}}'
+      action:
+      - service: notify.mobile_app_pixel_4_xl
+        data_template:
+          message: 'Test Notification
+
+            '
+          data:
+            ttl: 0
+            priority: high
+            clickAction: https://frigate.home.jeffbeagley.com/cameras/
+            actions:
+            - action: URI
+              title: Open Camera
+              uri: https://frigate.home.jeffbeagley.com/cameras/
+            - action: silence
+              title: Snooze
+      mode: single
+    - id: '1616043009297'
+      alias: Snooze_Automations
+      description: Snooze Automations based on specific Input Toggles that define the
+        duration
+      trigger:
+      - platform: state
+        entity_id: input_select.snooze_time_select
+      condition:
+      - condition: template
+        value_template: '{{ not is_state(''input_select.snooze_time_select'', ''Off'')
+          }}'
+      action:
+      - service: timer.start
+        data:
+          entity_id: timer.timer_snooze_automations
+          duration: 00:{{ states('input_select.snooze_time_select') }}:00
+      mode: single
+    - id: '1616044592774'
+      alias: Disable Snooze
+      description: ''
+      trigger:
+      - platform: state
+        entity_id: input_select.snooze_time_select
+      condition:
+      - condition: template
+        value_template: '{{ is_state(''input_select.snooze_time_select'', ''Off'') }}'
+      action:
+      - service: timer.finish
+        entity_id: timer.timer_snooze_automations
       mode: single
 
   configuration.yaml: |-
