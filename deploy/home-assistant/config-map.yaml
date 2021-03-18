@@ -349,4 +349,31 @@ data:
     script: !include scripts.yaml
     scene: !include scenes.yaml
 
+    wemo:
+      discovery: false
+      static:
+        - 192.168.1.143
+        - 192.168.1.142
+        - 192.168.1.42
+        - 192.168.1.105
+    panel_iframe:
+      router:
+        title: "Frigate"
+        url: "https://frigate.home.jeffbeagley.com"
+    input_select:
+        snooze_time_select:
+          name: Snooze Automations
+          options:
+            - "Off"
+            - "30"
+            - "60"
+            - "90"
+            - "180"
+          icon: mdi:timer
+    camera:
+      - platform: generic
+        name: Front Porch
+        still_image_url: "http://172.16.7.13/snap.jpeg"
+        stream_source: "rtsp://172.16.7.9:7447/bGvgQ7tbtP2lc3QG"
+
   
