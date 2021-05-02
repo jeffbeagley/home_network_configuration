@@ -134,7 +134,7 @@ spec:
           claimName: pihole-local-dnsmasq-claim
       containers:
       - name: pihole
-        image: pihole/pihole:v5.7
+        image: pihole/pihole:v5.8.1
         resources:
           limits:
             cpu: 1
