@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt
+  namespace: nvr
+  labels:
+    app: zigbee2mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      volumes:
+        - name: zigbee2mqtt-config
+          configMap:
+            name: zigbee2mqtt-config
+        - name: adapter
+          hostPath:
+            path: /dev/ttyACM0
+      containers:
+      - name: zigbee2mqtt
+        image: koenkk/zigbee2mqtt
+        securityContext:
+          privileged: true
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+          - name: zigbee2mqtt-config
+            mountPath: /app/configuration.yaml
+            subPath: configuration.yaml
+          - name: adapter
+            mountPath: /dev/ttyACM0
+            
+
+
