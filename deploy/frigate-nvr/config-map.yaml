@@ -270,6 +270,7 @@ data:
                 threshold: 0.7
           "Puppy Deck":
             coordinates: 0,236,0,360,375,360,328,307,396,196,158,123
+            filters:
               person:
                 min_area: 300
                 max_area: 100000
