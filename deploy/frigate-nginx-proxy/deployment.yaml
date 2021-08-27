@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-nginx-cache
+  namespace: nvr
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
+  selector:
+    app: frigate-nginx-cache
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-nginx-cache
+  namespace: nvr
+  labels:
+    app: frigate-nginx-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: frigate-nginx-cache
+  template:
+    metadata:
+      labels:
+        app: frigate-nginx-cache
+    spec:
+      volumes:
+        - name: frigate-nginx-cache-config
+          configMap:
+            name: frigate-nginx-cache-config
+      containers:
+      - name: frigate-nginx-cache
+        image: nginx:1.21.1-alpine
+        volumeMounts:
+          - name: frigate-nginx-cache-config
+            mountPath: /etc/nginx/templates/default.conf.template
+            subPath: proxy.conf

@@ -45,6 +45,16 @@ spec:
             name: frigate
             port: 
               number: 5000
+  - host: camera-events.home.jeffbeagley.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frigate-nginx-cache
+            port: 
+              number: 80
   - host: home.jeffbeagley.com
     http:
       paths:
