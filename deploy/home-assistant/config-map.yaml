@@ -21,6 +21,8 @@ data:
         - condition: state
           entity_id: sun.sun
           state: below_horizon
+        - condition: template
+          value_template: '{{ is_state("timer.timer_motion_delay", "idle") }}'
         - condition: or
           conditions:
           - condition: template
@@ -34,6 +36,8 @@ data:
       action:
       - service: timer.start
         data:
+          duration: '0'
+        target:
           entity_id: timer.timer_frontyard_floodlight
       - type: turn_on
         device_id: 5d72ecc73b5e0be9c42de10be43be0fa
@@ -91,6 +95,8 @@ data:
       action:
       - service: timer.start
         data:
+          duration: '0'
+        target:
           entity_id: timer.timer_daytime_person_cooldown
       - service: notify.mobile_app_pixel_4_xl
         data_template:
@@ -99,7 +105,7 @@ data:
           data:
             ttl: 0
             priority: high
-            image: https://frigate.home.jeffbeagley.com/api/events/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
+            image: https://camera-events.home.jeffbeagley.com/thumbnail/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
             clickAction: https://frigate.home.jeffbeagley.com/cameras/{{trigger.payload_json["after"]["camera"]}}?bbox=1&motion=1
             actions:
             - action: URI
@@ -131,6 +137,8 @@ data:
         - condition: state
           entity_id: sun.sun
           state: below_horizon
+        - condition: template
+          value_template: '{{ is_state("timer.timer_puppydeck_delay", "idle") }}'
         - condition: or
           conditions:
           - condition: template
@@ -147,6 +155,8 @@ data:
       action:
       - service: timer.start
         data:
+          duration: '0'
+        target:
           entity_id: timer.timer_puppydeck_floodlight
       - type: turn_on
         device_id: 74f02a570b63a2474ab8184c74cffa00
@@ -167,6 +177,11 @@ data:
         device_id: 74f02a570b63a2474ab8184c74cffa00
         entity_id: light.puppy_deck_light
         domain: light
+      - service: timer.start
+        data:
+          duration: 0:00:15
+        target:
+          entity_id: timer.timer_puppydeck_delay
       mode: single
     - id: '1613448023644'
       alias: Driveway Motion Light Off
@@ -182,6 +197,11 @@ data:
         device_id: 5d72ecc73b5e0be9c42de10be43be0fa
         entity_id: light.driveway_light
         domain: light
+      - service: timer.start
+        data:
+          duration: 0:00:15
+        target:
+          entity_id: timer.timer_motion_delay
       mode: single
     - id: '1613448448886'
       alias: Person Detection at Night
@@ -203,6 +223,8 @@ data:
       action:
       - service: timer.start
         data:
+          duration: '0'
+        target:
           entity_id: timer.timer_nighttime_person_cooldown
       - service: notify.mobile_app_pixel_4_xl
         data_template:
@@ -214,7 +236,7 @@ data:
           data:
             ttl: 0
             priority: high
-            image: https://frigate.home.jeffbeagley.com/api/events/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
+            image: https://camera-events.home.jeffbeagley.com/thumbnail/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
             clickAction: https://frigate.home.jeffbeagley.com/cameras/{{trigger.payload_json["after"]["camera"]}}?bbox=1&motion=1
             actions:
             - action: URI
@@ -440,6 +462,21 @@ data:
       - service: input_boolean.turn_off
         data:
           entity_id: input_boolean.zigbee_permit_join
+    - id: '1629140740336'
+      alias: test_echo
+      description: ''
+      trigger: []
+      condition: []
+      action:
+      - service: notify.alexa_media
+        data:
+          message: herrrroooooo
+          data:
+            type: announce
+            method: speak
+          target:
+          - media_player.bathroom
+      mode: single
 
   configuration.yaml: |-
     # Configure a default setup of Home Assistant (frontend, api, etc)
