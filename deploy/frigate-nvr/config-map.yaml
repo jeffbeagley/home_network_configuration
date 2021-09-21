@@ -29,7 +29,7 @@ data:
       # WARNING: must be unique if you are running multiple instances
       client_id: frigate
       # Optional: user
-      #user: mqtt_user
+      user: mqtt_user
       # Optional: password
       # NOTE: Environment variables that begin with 'FRIGATE_' may be referenced in {}.
       #       eg. password: '{FRIGATE_MQTT_PASSWORD}'
@@ -46,10 +46,35 @@ data:
           min_area: 2000
           max_area: 100000
           threshold: 0.75
-    clips:
-      max_seconds: 600
-      retain:
-        default: 7
+    record:
+      # Optional: Enable recording (default: shown below)
+      enabled: True
+      # Optional: Number of days to retain recordings regardless of events (default: shown below)
+      # NOTE: This should be set to 0 and retention should be defined in events section below
+      #       if you only want to retain recordings of events.
+      retain_days: 0
+      # Optional: Event recording settings
+      events:
+        # Optional: Maximum length of time to retain video during long events. (default: shown below)
+        # NOTE: If an object is being tracked for longer than this amount of time, the retained recordings
+        #       will be the last x seconds of the event unless retain_days under record is > 0.
+        max_seconds: 300
+        # Optional: Number of seconds before the event to include (default: shown below)
+        pre_capture: 5
+        # Optional: Number of seconds after the event to include (default: shown below)
+        post_capture: 5
+        # Optional: Objects to save recordings for. (default: all tracked objects)
+        #objects:
+        #  - person
+        # Optional: Restrict recordings to objects that entered any of the listed zones (default: no required zones)
+        required_zones: []
+        # Optional: Retention settings for recordings of events
+        retain:
+          # Required: Default retention days (default: shown below)
+          default: 30
+          # Optional: Per object retention days
+          #objects:
+          #  person: 15
     ffmpeg:
       hwaccel_args:
         - -hwaccel
@@ -66,9 +91,45 @@ data:
         record: >-
           -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1
           -strftime 1 -c copy
-        clips: >-
-          -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1
-          -strftime 1 -c copy
+    # Optional: birdseye configuration
+    birdseye:
+      # Optional: Enable birdseye view (default: shown below)
+      enabled: True
+      # Optional: Width of the output resolution (default: shown below)
+      width: 1920
+      # Optional: Height of the output resolution (default: shown below)
+      height: 1080
+      # Optional: Encoding quality of the mpeg1 feed (default: shown below)
+      # 1 is the highest quality, and 31 is the lowest. Lower quality feeds utilize less CPU resources.
+      quality: 8
+      # Optional: Mode of the view. Available options are: objects, motion, and continuous
+      #   objects - cameras are included if they have had a tracked object within the last 30 seconds
+      #   motion - cameras are included if motion was detected in the last 30 seconds
+      #   continuous - all cameras are included always
+      mode: motion
+    # Optional: Configuration for the jpg snapshots written to the clips directory for each event
+    # NOTE: Can be overridden at the camera level
+    snapshots:
+      # Optional: Enable writing jpg snapshot to /media/frigate/clips (default: shown below)
+      # This value can be set via MQTT and will be updated in startup based on retained value
+      enabled: True
+      # Optional: print a timestamp on the snapshots (default: shown below)
+      timestamp: True
+      # Optional: draw bounding box on the snapshots (default: shown below)
+      bounding_box: True
+      # Optional: crop the snapshot (default: shown below)
+      crop: False
+      # Optional: height to resize the snapshot to (default: original size)
+      #height: 175
+      # Optional: Restrict snapshots to objects that entered any of the listed zones (default: no required zones)
+      required_zones: []
+      # Optional: Camera override for retention settings (default: global values)
+      retain:
+        # Required: Default retention days (default: shown below)
+        default: 30
+        # Optional: Per object retention days
+        #objects:
+        #  person: 15
     cameras:
       frontporch:
         ffmpeg:
@@ -76,21 +137,12 @@ data:
             - path: rtsp://172.16.7.9:7447/wkBxF2rsJSeUd0F8
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 1280
-        height: 720
-        fps: 15
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 1280
+          height: 720
+          fps: 15
         zones:
           "Front Patio":
             coordinates: 0,720,1280,720,1280,440,814,331,248,602
@@ -135,21 +187,12 @@ data:
             - path: rtsp://172.16.7.9:7447/QJknjUjZxlnVgr9q
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 1920
-        height: 1080
-        fps: 15
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 1920
+          height: 1080
+          fps: 15
         zones:
           "Front Yard":
             coordinates: 0,1080,834,311,1357,267,1920,257,1920,1080
@@ -187,21 +230,12 @@ data:
             - path: rtsp://172.16.7.9:7447/Jsmq7T6p0xJDJpiC
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 640
-        height: 360
-        fps: 5
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 640
+          height: 360
+          fps: 5
         zones:
           Alley:
             coordinates: 640,360,0,360,0,163,0,0,640,0
@@ -211,21 +245,12 @@ data:
             - path: rtsp://172.16.7.9:7447/VU757vpltwJdOStJ
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 640
-        height: 360
-        fps: 5
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 640
+          height: 360
+          fps: 5
         zones:
           Backyard:
             coordinates: 640,0,640,360,0,360,0,0
@@ -244,21 +269,12 @@ data:
             - path: rtsp://172.16.7.9:7447/gGFsUv20rPsoxL2M
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 640
-        height: 360
-        fps: 15
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 640
+          height: 360
+          fps: 15
         zones:
           "Eds Backyard":
             coordinates: 169,110,370,0,0,0,0,223
@@ -286,21 +302,12 @@ data:
             - path: rtsp://172.16.7.9:7447/GxxGS0IQ39Cf6MhW
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 640
-        height: 360
-        fps: 5
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 640
+          height: 360
+          fps: 5
         zones:
           Garage:
             coordinates: 0,360,0,0,640,0,640,360
@@ -310,21 +317,12 @@ data:
             - path: rtsp://172.16.7.9:7447/dVex46f86wzMpiP4
               roles:
                 - detect
-                - clips
+                - record
                 - rtmp
-        width: 640
-        height: 360
-        fps: 5
-        clips:
-          enabled: true
-          pre_capture: 2
-          post_capture: 15
-        snapshots:
-          enabled: true
-          timestamp: false
-          bounding_box: true
-          retain:
-            default: 30
+        detect:
+          width: 640
+          height: 360
+          fps: 5
         zones:
           "Puppy Chair":
             coordinates: 304,42,332,72,310,360,46,314,34,312,24,52
