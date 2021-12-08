@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest
+  namespace: networking-tools
+spec:
+  externalTrafficPolicy: Local
+  ports:
+    - port: 80
+      targetPort: 80
+      name: ui
+  type: LoadBalancer
+  selector:
+    app: speedtest
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: speedtest-pv-volume
+  namespace: networking-tools
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/speedtest
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - server-01
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-pv-claim
+  namespace: networking-tools
+spec:
+  storageClassName: local-storage
+  volumeName: speedtest-pv-volume
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest
+  namespace: networking-tools
+  labels:
+    app: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: speedtest
+  template:
+    metadata:
+      labels:
+        app: speedtest
+    spec:
+      volumes:
+        - name: speedtest-data
+          persistentVolumeClaim:
+            claimName: speedtest-pv-claim
+      containers:
+      - name: speedtest
+        image: henrywhitaker3/speedtest-tracker
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: OOKLA_EULA_GDPR
+          value: "true"
+        volumeMounts:
+          - name: speedtest-data
+            mountPath: /config
+

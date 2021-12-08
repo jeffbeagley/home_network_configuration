@@ -20,6 +20,16 @@ spec:
             name: pihole
             port: 
               number: 9000
+  - host: speedtest.home.jeffbeagley.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: speedtest
+            port: 
+              number: 80
   tls:
   - hosts:
     - "home.jeffbeagley.com"
